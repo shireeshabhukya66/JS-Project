@@ -56,39 +56,7 @@
 
         <button class="btn btn-primary" id="loginSubmitBtn">Login</button>
     </form>
-
-
-    <!-- <script>
-        const loginBtnFinal = document.querySelector("#registerForm button");
-
-        loginBtnFinal.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            const loginEmail = document.querySelector("#registerForm input[type='email']").value;
-            const loginPassword = document.querySelector("#registerForm input[type='password']").value;
-
-            //JSON.parse -> Converts stored text into an array
-            let users = JSON.parse(localStorage.getItem("users")) || [];
-
-            // Check user exists
-            let validUser = users.find(       //the stored email equals the entered email
-                u => u.email === loginEmail && u.password === loginPassword
-            );
-
-            if (!validUser) {
-                alert("Invalid email or password!");
-                return;
-            }
-
-            // Save loggeduser   ---  If login is successful
-            localStorage.setItem("loggedUser", JSON.stringify(validUser));
-            alert("Login successful!");
-
-            //redirected to home page
-            window.location.href = "home.html";
-        });
-
-    </script> -->
+         
 
     <script src="main.js"></script>
 </body>
