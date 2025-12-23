@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <img src="images/pastery.png">
+        <h3>WELCOME TO ONLINE CAKE SHOP</h3>
+        <nav>
+            <a href="#contactSection">CONTACT US</a>
+
+            <a href="cart.html">
+                Cart items: <i class="fa-solid fa-basket-shopping" id="cartIcon"></i>
+            </a>
+            <a href="#"><i class="fa-solid fa-user"></i></a>
+        </nav>
+    </header>
+    <div class="user-dropdown" id="userDropdown">
+        <p id="userName"></p>
+        <p id="userEmail"></p>
+        <button id="logoutBtn">Logout</button>
+    </div>
+
+    <!-- FILTER BAR SECTION -->
+    <div class="filterBar">
+
+        <!-- SEARCHBOX FILTER -->
+        <div class="searchBox">
+             <!-- <i class="fa fa-search"></i>        Allows searching cakes by name/tags. -->
+            <input type="text" id="searchInput" placeholder="Search cakes...">
+        </div>
+
+        <!-- CHECKBOX FILTER -->
+        <div id="filters">
+            <label><input type="checkbox" class="filterTag" value="strawberry"> Strawberry</label>
+            <label><input type="checkbox" class="filterTag" value="eggless"> Eggless</label>
+            <label><input type="checkbox" class="filterTag" value="coconut"> Coconut</label>
+            <label><input type="checkbox" class="filterTag" value="almond"> Almond</label>
+        </div>
+
+        <!-- RADIO FILTER -->
+        <div id="radioFilters">
+            <label><input type="radio" name="tagRadio" class="tagRadio" value=""> All</label>
+            <label><input type="radio" name="tagRadio" class="tagRadio" value="premium"> Premium</label>
+            <label><input type="radio" name="tagRadio" class="tagRadio" value="veg"> Veg</label>
+        </div>
+
+        <!-- DROPDOWN FILTER -->
+        <select id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="butter_cakes">Butter Cakes</option>
+            <option value="black_forest_cakes">Black Forest Cakes</option>
+            <option value="chocolate">Chocolate Cakes</option>
+            <option value="vanilla">Vanilla Cakes</option>
+            <option value="red_velvet">Red Velvet Cakes</option>
+            <option value="banana">Banana Cakes</option>
+            <option value="carrot">Carrot Cakes</option>
+            <option value="strawberry">Strawberry Cakes</option>
+            <option value="blueberry">Blueberry Cakes</option>
+            <option value="cheese_cakes">Cheese Cakes</option>
+            <option value="coconut_cakes">Coconut Cakes</option>
+            <option value="coffee_cakes">Coffee Cakes</option>
+        </select>
+
+    </div>
+
+
+    <span id="ocs">
+        <h1>ALL CAKES</h1>
+    </span><br>
+    <div class="container" id="cakeContainer"></div>
+
+    <!-- MODAL -->
+    <div id="cakeModal" class="modal">
+        <div class="modal-content">
+            <span class="closeBtn">&times;</span>
+    
+            <img id="modalImg" src="" alt="">
+            <h2 id="modalTitle"></h2>
+            <h4 id="modalPrice"></h4>
+        </div>
+    </div>
+
+
+
+    <!-- FOOTER SECTION -->
+    <footer id="contactSection" class="footer">
+        <div class="footer-container">
+
+            <!-- ABOUT / LOGO -->
+            <div class="footer-box">
+                <h2 class="footer-title">Cake House</h2>
+                <p>
+                    Freshly baked cakes made with love.
+                    We deliver happiness to your doorstep.
+                </p>
+
+                <div class="footer-social">
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <!-- QUICK LINKS -->
+            <div class="footer-box">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="#cakeContainer">Cakes</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                    <li><a href="#contactSection">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- CONTACT INFO -->
+            <div class="footer-box">
+                <h3>Contact Us</h3>
+                <p><i class="fa-solid fa-location-dot"></i> Hyderabad, India</p>
+                <p><i class="fa-solid fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fa-solid fa-envelope"></i> support@cakehouse.com</p>
+            </div>
+
+            <!-- CONTACT FORM -->
+            <div class="footer-box">
+                <h3>Send us a message</h3>
+                <form class="footer-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Email Address" required>
+                    <textarea placeholder="Message..." required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            © 2025 Cake House. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            const container = document.getElementById("cakeContainer");
+
+        let allCakes = JSON.parse(localStorage.getItem("allCakes"));
+
+            /* DISPLAY CAKES */
+            function displayCakes(data) {
+                container.innerHTML = "";
+
+                Object.keys(data).forEach(category => {
+                    data[category].forEach(cake => {
+
+                        //Create Cake Card
+                        container.innerHTML += `
+                <div class="card">
+                    <img src="${cake.image}">
+                    <div class="card-content">
+                        <h3>${cake.title}</h3>
+                        <p>${cake.description}</p>
+
+                        <h6 class="cakePrice">Price: ₹300</h6>
+                        <h6>Discount: ${cake.discount}%</h6>
+
+                        <select class="weightSelect">
+                            <option value="0.5" data-price="300">0.5 kg</option>  
+                            <option value="1" data-price="500">1 kg</option>
+                            <option value="2" data-price="900">2 kg</option>
+                        </select>
+
+                        <button class="btn btn-primary addBtn"
+                            data-title="${cake.title}"
+                            data-image="${cake.image}">
+                            ADD
+                        </button>
+
+                        <div class="qtyBox" style="display:none;">
+                            <button class="minus">-</button>
+                            <span class="qty">1</span>
+                            <button class="plus">+</button>
+                        </div>
+                    </div>
+                </div>`;
+                    });
+                });
+
+                attachEvents();      //Weight dropdown(price change)
+                                     //ADD button(add cake to cart)
+                restoreCartUI();      //Restores cart quantities after page refresh
+                attachModalEvents();  //Enables modal popup when clicking on a cake card
+            }
+            displayCakes(allCakes);
+
+
+
+            function attachModalEvents() {
+                    const modal = document.getElementById("cakeModal");//get modal elements
+                    const modalImg = document.getElementById("modalImg");
+                    const modalTitle = document.getElementById("modalTitle");
+                    const modalPrice = document.getElementById("modalPrice");
+                    const closeBtn = modal.querySelector(".closeBtn");
+
+                    document.querySelectorAll(".card").forEach(card => {    //Selects all cake cards
+                        card.addEventListener("click", (e) => {
+
+                            if (e.target.tagName === "BUTTON" || e.target.tagName === "SELECT" || e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
+                                return;    //Modal opens only when card body is clicked
+                            }
+
+                            const cardContent = card.querySelector(".card-content");//Get Cake Data from Card
+                            const title = cardContent.querySelector("h3").textContent;
+                            const price = cardContent.querySelector(".cakePrice").textContent;
+                            const imgSrc = card.querySelector("img").src;
+
+                            modalImg.src = imgSrc;//Fill Modal with Cake Data
+                            modalTitle.textContent = title;
+                            modalPrice.textContent = price;
+
+                            // Show modal
+                            modal.style.display = "flex";
+                        });
+                    });
+
+                    // Close modal on X click
+                    closeBtn.onclick = () => {
+                        modal.style.display = "none";
+                    };
+                }
+
+
+
+
+            //Defines a function that attaches all required events to cake cards
+            function attachEvents() {
+                document.querySelectorAll(".weightSelect").forEach(select => {
+                    select.addEventListener("change", () => {  //Triggers when user changes cake weight
+                        let price = select.selectedOptions[0].dataset.price;  //dataset.price → value of data - price attribute
+                        select.closest(".card-content")     //finds parent card
+                        .querySelector(".cakePrice").textContent = `Price: ₹${price}`;
+                    });
+                });
+
+                //ADD button logic
+                document.querySelectorAll(".addBtn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const card = btn.closest(".card-content");  //Finds the current cake card
+                        const weightSelect = card.querySelector(".weightSelect");
+
+                        //Create cart item object
+                        let item = {
+                            title: btn.dataset.title,
+                            price: weightSelect.selectedOptions[0].dataset.price,
+                            image: btn.dataset.image,
+                            weight: weightSelect.value,
+                            quantity: 1
+                        };
+
+                       // Check if item already exists  //Prevents duplicate entries
+                        let exist = cart.find(
+                            c => c.title === item.title && c.weight === item.weight
+                        );
+
+                        const qtyBox = card.querySelector(".qtyBox");
+                        const qtyText = qtyBox.querySelector(".qty");
+
+                        btn.style.display = "none";
+                        qtyBox.style.display = "flex";
+
+                        if (exist) {
+                            exist.quantity++;
+                            qtyText.textContent = exist.quantity;  //Updates UI number
+                        } else {
+                            cart.push(item);
+                            qtyText.textContent = 1;
+                        }
+
+                        saveCart();  //save to local storage
+                        attachPlusMinus(card, item);
+                    });
+                });  
+            }
+
+
+
+
+            /* PLUS / MINUS HANDLER */ 
+            function attachPlusMinus(card, item) {     //card → the current cake card (HTML)
+                                                       // item → the corresponding cart item(JS object)
+                const qtyText = card.querySelector(".qty");
+                const btnAdd = card.querySelector(".addBtn");
+                const qtyBox = card.querySelector(".qtyBox");
+
+                const plus = card.querySelector(".plus");
+                const minus = card.querySelector(".minus");
+
+                plus.onclick = () => {
+                    let c = cart.find(c => c.title === item.title && c.weight === item.weight);
+                    c.quantity++;
+                    qtyText.textContent = c.quantity;
+                    saveCart();
+                };
+
+                minus.onclick = () => {
+                    let c = cart.find(c => c.title === item.title && c.weight === item.weight);
+
+                    if (c.quantity > 1) {
+                        c.quantity--;
+                        qtyText.textContent = c.quantity;
+                    } else {
+                        cart = cart.filter(x => !(x.title === item.title && x.weight === item.weight));
+                        qtyBox.style.display = "none";
+                        btnAdd.style.display = "block";
+                    }
+                    saveCart();
+                };
+            }
+
+
+            /* RESTORE UI ON REFRESH */
+            function restoreCartUI() {
+                let saved = JSON.parse(localStorage.getItem("cart")) || [];
+
+                saved.forEach(item => {
+                    document.querySelectorAll(".card").forEach(card => {
+
+                        let title = card.querySelector("h3").textContent;
+                        let weightSelect = card.querySelector(".weightSelect");
+
+                        // title + weight match 
+                        if (title === item.title && weightSelect.value == item.weight) {
+
+                            let addBtn = card.querySelector(".addBtn");//Gets UI elements to update
+                            let qtyBox = card.querySelector(".qtyBox");
+                            let qtyText = card.querySelector(".qty");
+
+                            weightSelect.value = item.weight;//restore selected weight fro cart
+
+                            addBtn.style.display = "none";
+                            qtyBox.style.display = "flex";
+                            qtyText.textContent = item.quantity;
+
+                            attachPlusMinus(card, item);//Required because events are lost on refresh
+                        }
+                    });
+                });
+            }
+
+            /* SAVE TO LOCALSTORAGE */
+            function saveCart() {
+                localStorage.setItem("cart", JSON.stringify(cart));
+            }
+
+
+
+
+
+
+    
+        // Toggle dropdown when user icon clicked
+        document.querySelector(".fa-user").addEventListener("click", function (e) {
+            e.stopPropagation();
+
+            let dropdown = document.getElementById("userDropdown");
+
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+
+            let user = JSON.parse(localStorage.getItem("loggedUser"));
+
+            if (user) {
+                document.getElementById("userName").textContent = "Name: " + user.name;
+                document.getElementById("userEmail").textContent = "Email: " + user.email;
+            } else {
+                document.getElementById("userName").textContent = "Not logged in";
+                document.getElementById("userEmail").textContent = "";
+            }
+        });
+
+        document.addEventListener("click", function () {
+            document.getElementById("userDropdown").style.display = "none";
+        });
+
+        // Logout user
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            localStorage.removeItem("loggedUser");
+            alert("Logged out successfully!");
+            location.reload();
+        });
+
+
+
+
+
+        // Search & dropdown Filtered Cakes
+        document.getElementById("searchInput").addEventListener("keyup", applyFilters);
+        document.getElementById("categoryFilter").addEventListener("change", applyFilters);
+
+        // CHECKBOX TAGS
+        document.querySelectorAll(".filterTag").forEach(c =>
+            c.addEventListener("change", applyFilters)
+        );
+
+        // RADIO TAGS
+        document.querySelectorAll(".tagRadio").forEach(r =>
+            r.addEventListener("change", applyFilters)
+        );
+
+        function applyFilters() {
+            let searchText = document.getElementById("searchInput").value.toLowerCase();
+
+            // CHECKBOX TAGS
+            let selectedCheckTags = [...document.querySelectorAll(".filterTag:checked")]
+                .map(c => c.value.toLowerCase());
+
+            // RADIO TAG
+            let selectedRadioTag = document.querySelector(".tagRadio:checked")?.value.toLowerCase() || "";
+
+            // DROPDOWN CATEGORY
+            let selectedCategory = document.getElementById("categoryFilter").value;
+
+            let filtered = {};
+
+            Object.keys(allCakes).forEach(category => {
+
+                let cakes = allCakes[category];
+
+                // CATEGORY DROPDOWN FILTER
+                if (selectedCategory && category !== selectedCategory) {
+                    filtered[category] = [];
+                    return;
+                }
+
+                filtered[category] = cakes.filter(cake => {
+
+                    let cakeTags = cake.tags ? cake.tags.map(t => t.toLowerCase()) : [];
+
+                    // SEARCH FILTER
+                    let matchSearch =
+                        cake.title.toLowerCase().includes(searchText) ||
+                        cake.description.toLowerCase().includes(searchText) ||
+                        cakeTags.some(tag => tag.includes(searchText));
+
+                    // CHECKBOX FILTER
+                    let matchCheckbox =
+                        selectedCheckTags.length === 0 ||    //every() → returns true only if every selected tag is in the cake’s tags
+                        selectedCheckTags.every(tag => cakeTags.includes(tag));
+
+                    // RADIO FILTER
+                    let matchRadio =
+                        selectedRadioTag === "" || cakeTags.includes(selectedRadioTag);
+
+                    return matchSearch && matchCheckbox && matchRadio;
+                });
+            });
+
+            displayCakes(filtered);
+        }
+
+
+
+
+        // alert message to user when send feedback & stored in local storage
+        document.querySelector(".footer-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            let name = this.querySelector("input[type='text']").value.trim(); //this refers to the form that triggered the event.
+            let email = this.querySelector("input[type='email']").value.trim();
+            let message = this.querySelector("textarea").value.trim();
+
+            let entry = {
+                name,
+                email,
+                message,
+                date: new Date().toLocaleString()
+            };
+
+            let savedMessages = JSON.parse(localStorage.getItem("contactMessages")) || [];
+
+            savedMessages.push(entry);
+
+            localStorage.setItem("contactMessages", JSON.stringify(savedMessages));
+            alert("Your message has been saved!");
+            this.reset();  //clear the form
+        });
+    </script>
+</body>
+</html>
