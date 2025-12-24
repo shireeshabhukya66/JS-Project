@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body style="
     background-color: lightgrey; 
     background-image: url('images/bakery app.png');
@@ -42,6 +41,11 @@
         <input type="password" id="cmpassword" placeholder="Confirm password">
 
          <button class="btn btn-primary" id="loginBtn">Submit</button>   <!-- stores 'users' array -->
+        <p class="mt-2 text-center">
+            Already have an account?
+            <a href="#" id="showLogin">Login</a>
+        </p>
+
     </form>
 
 
@@ -54,11 +58,14 @@
         <label>Password :</label>
         <input type="password" id="loginPassword" placeholder="Enter password">
 
-        <button class="btn btn-primary" id="loginSubmitBtn">Login</button>
+        <button type="button" class="btn btn-primary" id="loginSubmitBtn">Login</button>
+        <p class="mt-2 text-center">
+            Don’t have an account?
+            <a href="#" id="showSignup">Signup</a>
+        </p>
     </form>
-         
+
 
     <script src="main.js"></script>
 </body>
-
 </html>
