@@ -208,7 +208,8 @@
 
 
  
-        const loginBtnFinal = document.querySelector("#registerForm button");
+    
+        const loginBtnFinal = document.getElementById("loginSubmitBtn");
 
         loginBtnFinal.addEventListener("click", function (e) {
             e.preventDefault();
@@ -239,16 +240,31 @@
 
   
 
-
-
-
         const inputForm = document.getElementById("inputForm");   
         const registerForm = document.getElementById("registerForm");    
         const loginBtn = document.getElementById("loginBtn");
 
 
-            inputForm.style.display = "block";
-            registerForm.style.display = "none";
+        const showLogin = document.getElementById("showLogin");
+        const showSignup = document.getElementById("showSignup");
+
+        // Show login form
+      showLogin.addEventListener("click", (e) => {
+        e.preventDefault();
+        inputForm.style.display = "none";
+        registerForm.style.display = "block";
+      });
+
+      // Show signup form
+      showSignup.addEventListener("click", (e) => {
+        e.preventDefault();
+        registerForm.style.display = "none";
+        inputForm.style.display = "block";
+      });
+
+
+        inputForm.style.display = "block";
+        registerForm.style.display = "none";
 
         loginBtn.addEventListener("click", (e) => {
             e.preventDefault();  //stops the page from reloading when form is submitted
@@ -281,9 +297,16 @@
              // Check if email already exists
             let exists = users.find(u => u.email === email);
             if (exists) {
-               alert("User with this email already exists!");
-               return;
-              }
+              alert("Account already exists. Please login.");
+
+              inputForm.style.display = "none";
+              registerForm.style.display = "block";
+
+              // Autofill login email
+              document.getElementById("loginEmail").value = email;
+              return;
+            }
+
 
             //save new user --> Add the new user to the array.
             users.push({ name, number, email, password });
