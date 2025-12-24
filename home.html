@@ -76,6 +76,9 @@
     </span><br>
     <div class="container" id="cakeContainer"></div>
 
+    <!-- Pagination Body -->
+    <div id="pagination" class="pagination"></div>
+
     <!-- MODAL -->
     <div id="cakeModal" class="modal">
         <div class="modal-content">
@@ -155,52 +158,112 @@
 
         let allCakes = JSON.parse(localStorage.getItem("allCakes"));
 
+       
+        let currentPage = 1;
+        const cakesPerPage = 20;
+        let filteredData = {};
+
+
             /* DISPLAY CAKES */
-            function displayCakes(data) {
+           function displayCakes(data) {
+                filteredData = data;
+                currentPage = 1;
+                renderPage();
+             }  
+            displayCakes(allCakes);
+
+
+
+          function renderPage() {
                 container.innerHTML = "";
 
-                Object.keys(data).forEach(category => {
-                    data[category].forEach(cake => {
+                let allItems = [];
 
-                        //Create Cake Card
-                        container.innerHTML += `
-                <div class="card">
-                    <img src="${cake.image}">
-                    <div class="card-content">
-                        <h3>${cake.title}</h3>
-                        <p>${cake.description}</p>
-
-                        <h6 class="cakePrice">Price: ₹300</h6>
-                        <h6>Discount: ${cake.discount}%</h6>
-
-                        <select class="weightSelect">
-                            <option value="0.5" data-price="300">0.5 kg</option>  
-                            <option value="1" data-price="500">1 kg</option>
-                            <option value="2" data-price="900">2 kg</option>
-                        </select>
-
-                        <button class="btn btn-primary addBtn"
-                            data-title="${cake.title}"
-                            data-image="${cake.image}">
-                            ADD
-                        </button>
-
-                        <div class="qtyBox" style="display:none;">
-                            <button class="minus">-</button>
-                            <span class="qty">1</span>
-                            <button class="plus">+</button>
-                        </div>
-                    </div>
-                </div>`;
+                Object.keys(filteredData).forEach(category => {
+                    filteredData[category].forEach(cake => {
+                        allItems.push(cake);
                     });
                 });
 
-                attachEvents();      //Weight dropdown(price change)
-                                     //ADD button(add cake to cart)
-                restoreCartUI();      //Restores cart quantities after page refresh
-                attachModalEvents();  //Enables modal popup when clicking on a cake card
+                let start = (currentPage - 1) * cakesPerPage;
+                let end = start + cakesPerPage;
+                let pageItems = allItems.slice(start, end);
+
+                pageItems.forEach(cake => {
+                    container.innerHTML += `
+        <div class="card">
+            <img src="${cake.image}">
+            <div class="card-content">
+                <h3>${cake.title}</h3>
+                <p>${cake.description}</p>
+                <h6 class="cakePrice">Price: ₹300</h6>
+                <h6>Discount: ${cake.discount}%</h6>
+                <select class="weightSelect">
+                    <option value="0.5" data-price="300">0.5 kg</option>
+                    <option value="1" data-price="500">1 kg</option>
+                    <option value="2" data-price="900">2 kg</option>
+                </select>
+                <button class="btn btn-primary addBtn"
+                    data-title="${cake.title}"
+                    data-image="${cake.image}">
+                    ADD
+                </button>
+                <div class="qtyBox" style="display:none;">
+                    <button class="minus">-</button>
+                    <span class="qty">1</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>`;
+                });
+
+                attachEvents();
+                restoreCartUI();
+                attachModalEvents();
+                renderPagination(allItems.length);
             }
-            displayCakes(allCakes);
+
+
+            
+            function renderPagination(totalItems) {
+                    const pagination = document.getElementById("pagination");
+                    pagination.innerHTML = "";
+
+                    let totalPages = Math.ceil(totalItems / cakesPerPage);
+                    if (totalPages <= 1) return;
+
+                    let prev = document.createElement("button");
+                    prev.textContent = "Prev";
+                    prev.disabled = currentPage === 1;
+                    prev.onclick = () => {
+                        currentPage--;
+                        renderPage();
+                    };
+                    pagination.appendChild(prev);
+
+                    for (let i = 1; i <= totalPages; i++) {
+                        let btn = document.createElement("button");
+                        btn.textContent = i;
+                        if (i === currentPage) btn.classList.add("active");
+
+                        btn.onclick = () => {
+                            currentPage = i;
+                            renderPage();
+                        };
+                        pagination.appendChild(btn);
+                    }
+
+                    let next = document.createElement("button");
+                    next.textContent = "Next";
+                    next.disabled = currentPage === totalPages;
+                    next.onclick = () => {
+                        currentPage++;
+                        renderPage();
+                    };
+                    pagination.appendChild(next);
+                }
+
+
 
 
 
@@ -327,6 +390,7 @@
             }
 
 
+
             /* RESTORE UI ON REFRESH */
             function restoreCartUI() {
                 let saved = JSON.parse(localStorage.getItem("cart")) || [];
@@ -360,9 +424,6 @@
             function saveCart() {
                 localStorage.setItem("cart", JSON.stringify(cart));
             }
-
-
-
 
 
 
@@ -400,7 +461,6 @@
 
 
 
-
         // Search & dropdown Filtered Cakes
         document.getElementById("searchInput").addEventListener("keyup", applyFilters);
         document.getElementById("categoryFilter").addEventListener("change", applyFilters);
@@ -414,6 +474,8 @@
         document.querySelectorAll(".tagRadio").forEach(r =>
             r.addEventListener("change", applyFilters)
         );
+
+
 
         function applyFilters() {
             let searchText = document.getElementById("searchInput").value.toLowerCase();
@@ -463,9 +525,10 @@
                 });
             });
 
-            displayCakes(filtered);
+           filteredData = filtered;
+            currentPage = 1;
+            renderPage();
         }
-
 
 
 
